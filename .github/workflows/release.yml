@@ -10,12 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Show repo files
+        run: ls -R | head -60
+      - name: Find project folder
+        id: p
+        run: |
+          f=$(find . -name settings.gradle.kts | head -n1)
+          echo "dir=$(dirname "$f")" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: 17 }
       - uses: gradle/actions/setup-gradle@v4
         with: { gradle-version: 8.7 }
       - run: gradle assembleRelease -PappVersionCode=${{ github.run_number }} -PappVersionName=1.${{ github.run_number }}
+        working-directory: ${{ steps.p.outputs.dir }}
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.${{ github.run_number }}
-          files: app/build/outputs/apk/release/*.apk
+          files: ${{ steps.p.outputs.dir }}/app/build/outputs/apk/release/*.apk
