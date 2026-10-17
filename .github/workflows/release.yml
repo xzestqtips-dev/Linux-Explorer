@@ -11,14 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Unzip project
-        run: unzip -o LinuxExplorer-v4.zip -d src
+        run: unzip -o LinuxExplorer-2.0.zip -d src
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: 17 }
       - uses: gradle/actions/setup-gradle@v4
         with: { gradle-version: 8.7 }
-      - run: gradle assembleRelease -PappVersionCode=${{ github.run_number }} -PappVersionName=1.${{ github.run_number }}
+      - run: gradle assembleRelease -PappVersionCode=${{ github.run_number }} -PappVersionName=2.0
         working-directory: src
       - uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.${{ github.run_number }}
+          tag_name: v2.0-build${{ github.run_number }}
+          name: Linux Explorer 2.0
           files: src/app/build/outputs/apk/release/*.apk
