@@ -10,21 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Find project
-        id: p
-        run: |
-          echo "--- files in repo ---"
-          find . -not -path './.git/*' -type f | head -50
-          f=$(find . -name settings.gradle.kts -not -path './.git/*' | head -n1)
-          if [ -z "$f" ]; then echo "NO settings.gradle.kts FOUND IN REPO"; exit 1; fi
-          echo "dir=$(dirname "$f")" >> "$GITHUB_OUTPUT"
+      - name: Unzip project
+        run: unzip -o LinuxExplorer-v4.zip -d src
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: 17 }
       - uses: gradle/actions/setup-gradle@v4
         with: { gradle-version: 8.7 }
       - run: gradle assembleRelease -PappVersionCode=${{ github.run_number }} -PappVersionName=1.${{ github.run_number }}
-        working-directory: ${{ steps.p.outputs.dir }}
+        working-directory: src
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.${{ github.run_number }}
-          files: ${{ steps.p.outputs.dir }}/app/build/outputs/apk/release/*.apk
+          files: src/app/build/outputs/apk/release/*.apk
