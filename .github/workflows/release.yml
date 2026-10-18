@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Unzip project
-        run: unzip -o LinuxExplorer-2.0.zip -d src
+        run: unzip -o LinuxExplorer-2.1.zip -d src
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: 17 }
       - uses: gradle/actions/setup-gradle@v4
@@ -21,5 +21,5 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: v2.0-build${{ github.run_number }}
-          name: Linux Explorer 2.0
+          name: Linux Explorer 2.1
           files: src/app/build/outputs/apk/release/*.apk
